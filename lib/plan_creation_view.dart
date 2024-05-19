@@ -13,6 +13,7 @@ class PlanCreationView extends StatefulWidget {
 class _PlanCreationViewState extends State<PlanCreationView> {
   TextEditingController headingContoller = TextEditingController();
   TextEditingController descriptionContoller = TextEditingController();
+  TextEditingController imageUrlContoller = TextEditingController();
   PlanCategory _selectedCategory = PlanCategory.normal;
 
   final formKey = GlobalKey<FormState>();
@@ -49,10 +50,13 @@ class _PlanCreationViewState extends State<PlanCreationView> {
                       ? "Please enter a valid Heading"
                       : null,
                 ),
-                // CustomTextFormField(
-                //     controller: categoryContoller, labelText: 'category'),
-                // CustomTextFormField(
-                //     controller: headingContoller, labelText: 'Heading'),
+                CustomTextFormField(
+                  controller: imageUrlContoller,
+                  labelText: 'Image Url eg. https://example.com/image.png',
+                  validator: (s) => s == null || s.isEmpty
+                      ? "Please enter a valid Public Image Url"
+                      : null,
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,8 +84,7 @@ class _PlanCreationViewState extends State<PlanCreationView> {
                           formKey.currentState!.validate()) {
                         // Check of image too,
                         PlanModel planModel = PlanModel(
-                          imageUrl:
-                              'https://plus.unsplash.com/premium_photo-1708110921152-850148b86156',
+                          imageUrl: imageUrlContoller.text,
                           heading: headingContoller.text,
                           description: descriptionContoller.text,
                           category: _selectedCategory,

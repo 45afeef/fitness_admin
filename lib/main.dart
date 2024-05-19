@@ -1,6 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:fitness_admin/plan_creation_view.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+import 'models/plan.dart';
+import 'widgets/plan_card.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -57,16 +66,37 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final plansQuery =
+        FirebaseFirestore.instance.collection('plans').withConverter<PlanModel>(
+              fromFirestore: (snapshot, options) =>
+                  PlanModel.fromFirestore(snapshot),
+              toFirestore: (value, options) {
+                return value.toFirestore();
+              },
+            );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      body: FirestoreListView<PlanModel>(
+        query: plansQuery,
+        itemBuilder: (context, snapshot) {
+          PlanModel plan = snapshot.data();
+          return PlanCard(model: plan);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return const PlanCreationView();
+            },
+          ));
+        },
+        tooltip: 'Create new plan',
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -84,7 +84,33 @@ class _MyHomePageState extends State<MyHomePage> {
         query: plansQuery,
         itemBuilder: (context, snapshot) {
           PlanModel plan = snapshot.data();
-          return PlanCard(model: plan);
+          return InkWell(
+              onLongPress: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text(
+                            'Are you sure to Delete this plan named "${plan.heading}"'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel')),
+                          ElevatedButton(
+                            onPressed: () {
+                              snapshot.reference
+                                  .delete()
+                                  .then((value) => Navigator.pop(context));
+                            },
+                            child: const Text('Yes Delete'),
+                          )
+                        ],
+                      );
+                    });
+              },
+              child: PlanCard(model: plan));
         },
       ),
       floatingActionButton: FloatingActionButton(

@@ -38,6 +38,8 @@ dependencies:
   cloud_firestore: ^4.17.3
   firebase_ui_firestore: ^1.6.3
   firebase_core: ^2.31.0
+  # run - flutter pub run flutter_launcher_icons
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
